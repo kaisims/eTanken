@@ -1,6 +1,6 @@
 asgiref==3.2.7
 Django==3.0.5
--e git+https://github.com/kaisims/ecrterm.git@py3#egg=ecrterm
+-e git+ssh://git@github.com/kaisims/ecrterm.git@py3#egg=ecrterm
 pyserial==3.4
 pytz==2019.3
 six==1.14.0
