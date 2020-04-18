@@ -18,11 +18,11 @@ def checkConnection():
 async def main():
     #TODO Check if Ladepunkt ist bereit
     register()
-    receipt = await preAuthorisation()
+    receipt = preAuthorisation()
     #TODO Sende Ladevorgang starten an Backend
     #TODO Per Javascript? Display ändern
     #TODO Warte auf Antwort
-    bon = await teilstorno(receipt=receipt, amount=2500)
+    bon = teilstorno(receipt=receipt, amount=2500)
     printer(bon)
     #TODO Upload Bon
     #TODO wieder auf Startseite
@@ -47,7 +47,7 @@ def register():
             # 0x9c karte draussen.
 
 
-async def preAuthorisation(amount=5000):
+def preAuthorisation(amount=5000):
     receipt = e.preauthorisation(amount_cent=amount)
     if receipt:
         e.wait_for_status()
@@ -62,7 +62,7 @@ async def preAuthorisation(amount=5000):
         return None
 
 
-async def teilstorno(receipt=None, amount=10):
+def teilstorno(receipt=0, amount=10):
     if e.preauthorisationreverse(receipt=receipt, amount_cent=amount):
         bon = e.last_printout()
         e.wait_for_status()
