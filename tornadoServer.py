@@ -72,7 +72,6 @@ def make_app():
 
 
 if __name__ == "__main__":
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     app = make_app()
     app.listen(8889)
     tc = TerminalController("192.168.178.89:22001")
