@@ -1,9 +1,10 @@
-{% extends "app/base.html" %}
+{% extends "base.html" %}
 {% block content %}
-    <div><h1>Bock zu laden?</h1>
+    <div><h1>Nice!</h1>
     <br>
     <p>Die Ladung wird {{euro}} Euro pro Minute kosten!</p>
         Einfach Kreditkarte oder Handy ans Lesegerät halten, um Zahlung zu autorisieren.
     </div>
-    <h2><a href="{% url 'app-start' %}">zurück</a></h2>
-{% endblock content %}
+    <h2><a href="{{url}}">zurück</a></h2>
+    <script src='{{ static_url("js/authorise.js") }}'></script>
+{% end %}
