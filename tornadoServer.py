@@ -73,6 +73,6 @@ def make_app():
 
 if __name__ == "__main__":
     app = make_app()
-    app.listen(8889)
+    app.listen(8000)
     tc = TerminalController("192.168.178.89:22001")
     tornado.ioloop.IOLoop.current().start()
