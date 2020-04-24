@@ -1,3 +1,4 @@
+import os
 import time
 from abc import ABC
 
@@ -67,11 +68,14 @@ def make_app():
         (r"/", StartHandler),
         (r"/authorise/", AuthoriseHandler),
         (r"/charge/([^/]+)?", ChargeHandler)
-
-    ], debug=True, template_path='.\\app\\templates\\', static_path='.\\app\\')
+    ],  debug=True,
+        template_path=os.path.join(dirname, 'app', 'templates'),
+        static_path=os.path.join(dirname, 'app')
+    )
 
 
 if __name__ == "__main__":
+    dirname = os.path.dirname(__file__)
     app = make_app()
     app.listen(8000)
     tc = TerminalController("192.168.178.89:22001")
