@@ -9,6 +9,7 @@ from tornado.web import RequestHandler
 
 import asyncio
 from app.terminalController import *
+from app.chargeCloudController import *
 
 data = dict(paid=False)
 
@@ -62,12 +63,19 @@ class ChargeHandler(RequestHandler):
         self.render('charge.html', receipt=receipt)
 
 
+class StopTransHandler(RequestHandler):
+    def post(self, transactionid):
+        self.set_status(200)
+        self.finish()
+
+
 def make_app():
 
     return tornado.web.Application([
         (r"/", StartHandler),
         (r"/authorise/", AuthoriseHandler),
-        (r"/charge/([^/]+)?", ChargeHandler)
+        (r"/charge/([^/]+)?", ChargeHandler),
+        (r"/stopCharge/([^/]+)?", StopTransHandler)
     ],  debug=True,
         template_path=os.path.join(dirname, 'app', 'templates'),
         static_path=os.path.join(dirname, 'app')
