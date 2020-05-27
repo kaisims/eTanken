@@ -1,6 +1,7 @@
 from base64 import b64encode
 
 import requests
+import zulu
 import json
 
 
@@ -15,15 +16,12 @@ class ChargeCloudController():
         self.url = "https://" + env + ".chargecloud.de/"
         self.__auth = "context#"
         self.locationid = locationid
-        self.chargepoints = None
+        self.location = None
+        self.tariff = None
 
     def checkConnection(self):
         r = requests.get(url=self.url)
         return r.status_code
-
-    def checkAvailability(self):
-        #TODO Check Verfügbarkeit des Ladepunktes
-        return True
 
     def authorize(self):
         url = self.url + "rest:contract/" + self.__application + "/getContractAuthorizationToken"
@@ -32,37 +30,63 @@ class ChargeCloudController():
         self.__auth = "Token " + str(b64encode(data.encode("utf-8")), "utf-8")
         print(self.__auth)
 
-    def getAGBandPP(self):
+    def getAGB(self):
         url = self.url + "rest:client/" + self.__application + "/getActiveAgb"
         r = requests.get(url=url)
-        text = r.json()["data"]["text"]
+        return r.json()["data"]["text"]
+
+    def getPP(self):
         url = self.url + "rest:client/" + self.__application + "/getActivePrivacyPolicy"
         r = requests.get(url=url)
-        text += r.json()["data"]["text"]
-        print(text)
+        return r.json()["data"]["text"]
 
-    def getTarif(self):
-        return True
+    def getTariff(self, tariffId):
+        if self.tariff is not None:
+            url = self.url + "emobility:ocpi/" + self.__application + "/ocpi/app/2.0/tarrifs/DE/POW/" + tariffId
+            headers = {'Authorization': self.__auth}
+            r = requests.post(url=url, data=None, headers=headers)
+            self.tariff = r.json()["data"]
+        return self.tariff
 
     def getLocation(self):
-        url = self.url + "emobility:ocpi/" + self.__application + "/ocpi/app/2.0/locations/DE/*E00003*001/" + self.locationid
+        if self.location is not None:
+            date = zulu.parse(self.location["timestamp"])
+            if zulu.now().subtract(date) < zulu.parse_delta("5m"):
+                print("returned chargepoints from cache")
+                return self.location
+        url = self.url + "emobility:ocpi/" + self.__application + "/ocpi/app/2.0/locations/DE/POW/" + self.locationid
         headers = {'Authorization': self.__auth}
         r = requests.post(url=url, data=None, headers=headers)
-        self.chargepoints = r.json()["data"][0]["evses"]
-        print(self.chargepoints)
+        self.location = r.json()
+        print("returned chargepoints")
+        return self.location
 
-    def startLoading(self):
+    def getChargePoints(self):
+        return self.getLocation()["data"][0]["evses"]
+
+    def getChargePointsAvailability(self):
+        locations = self.getChargePoints()
+        for location in locations:
+            if location["status"] == "AVAILABLE":
+                return True
+        return False
+
+    def startLoading(self, evseid):
         url = self.url + "rest:contract/" + self.__application + "/startEmobilityTransaction"
-        params = {"chargePointEvse": self.evseid,
+        params = {"chargePointEvse": evseid,
                   "authenticatorId": self.__authenticatorid}
         headers = {'Authorization': self.__auth}
         r = requests.post(url=url, headers=headers, params=params, data=None)
         print("Antwort: " + r.text)
-        #TODO transactionID abfragen, um stoppen zu können
+        ##debug
+        transId = self.getTransactionId(evseid)
+        print("TransId: " + str(transId))
 
-    def stopLoading(self):
+    #########
+    ##DEBUG##
+    #########
+    def stopLoading(self, transactionId = None):
         url = self.url + "rest:contract/" + self.__application + "/stopEmobilityTransaction"
-        transactionId = None
         params = {"transactionId": transactionId}
         headers = {'Authorization': self.__auth}
         r = requests.post(url=url, headers=headers, params=params, data=None)
