@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    <div><h1>Ladepunkt auswählen</h1>
+    <br>
+        {% for cp in chargepoints %}
+        <div>
+            <a href="{{ cp['url'] }}">
+                <b> Test {{ cp['id'] }}</b>
+            </a>
+        </div>
+        {% end %}
+    </div>
+{% end %}
