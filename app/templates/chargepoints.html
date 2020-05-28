@@ -4,8 +4,8 @@
     <br>
         {% for cp in chargepoints %}
         <div>
-            <a href="{{ cp['url'] }}">
-                <b> Test {{ cp['id'] }}</b>
+            <a {% if cp['status'] != 'AVAILABLE' %}class="disabled"{% end %} href="{{ cp['url'] }}" >
+                <b> Ladepunkt {{ cp['id'] }} ({{cp['status']}})</b>
             </a>
         </div>
         {% end %}

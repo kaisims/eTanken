@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>Start</title>
     <link rel="stylesheet" href='{{ static_url("css/tingle.min.css") }}'>
+    <style>
+        a.disabled {
+            pointer-events: none;
+            cursor: default;
+        }
+    </style>
 </head>
 <body>
 {% block content %}{% end %}

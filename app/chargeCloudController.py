@@ -79,8 +79,7 @@ class ChargeCloudController():
         r = requests.post(url=url, headers=headers, params=params, data=None)
         print("Antwort: " + r.text)
         ##debug
-        transId = self.getTransactionId(evseid)
-        print("TransId: " + str(transId))
+        return self.getTransactionId(evseid)
 
     #########
     ##DEBUG##
@@ -91,6 +90,18 @@ class ChargeCloudController():
         headers = {'Authorization': self.__auth}
         r = requests.post(url=url, headers=headers, params=params, data=None)
         print("Antwort: " + r.text)
+
+    def getTransactionId(self, evseid):
+        url = self.url + "rest:contract/" + self.__application + "/getEmobilityTransactions"
+        headers = {'Authorization': self.__auth}
+        params = {"limit": 20,
+                  "offset": 0}
+        r = requests.get(url=url, headers=headers, params=params)
+        records = r.json()["data"]["records"]
+        for record in records:
+            if record["data"]["evseId"] == evseid:
+                return record["id"]
+        return None
 
     def getInvoiceNumber(self):
         #TODO Rechnungsnummer abholen

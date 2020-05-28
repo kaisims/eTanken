@@ -14,6 +14,7 @@ from app.chargeCloudController import *
 
 data = dict(paid=False)
 
+
 class StartHandler(RequestHandler):
     def get(self):
         if tc.checkConnection() and cc.checkConnection() == 200:
@@ -42,7 +43,7 @@ class AuthoriseHandler(RequestHandler):
                 tc.setupterminal()
                 #receipt = 5
                 receipt = tc.preAuthorisation()
-                #TODO receipt zu cc schicken
+                #TODO ASYNC
                 if receipt:
                     data['receipt'] = receipt
                     data['paid'] = True
@@ -89,14 +90,12 @@ class StopTransHandler(RequestHandler):
     def post(self, receipt):
         amount = self.get_argument('amount')
         tc.teilstorno(receipt=receipt, amount=amount)
-        data["paid"] = False
         self.set_status(200)
         self.finish()
 
     def get(self, receipt):
         bon = tc.teilstorno(receipt=receipt, amount=2000)
-        cc.stopLoading()
-        data["paid"] = False
+        cc.stopLoading(data["transId"])
         self.render('bon.html', bon=bon)
 
 

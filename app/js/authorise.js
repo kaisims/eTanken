@@ -24,6 +24,7 @@ function showAgb(){
     modal.setContent("Wird geladen..")
     var ajax = new XMLHttpRequest();
     ajax.onreadystatechange = function () {
+        console.log("AGB " +this.status + " " + this.response + " " + ajax.readyState)
         if (ajax.readyState==4 && ajax.status==200) {
             modal.setContent('<h1>Allgemeine Geschäftsbedingungen</h1> '+ this.responseText)
         }
@@ -37,6 +38,7 @@ function showPP() {
     modal.setContent("Wird geladen..")
     var ajax = new XMLHttpRequest();
     ajax.onreadystatechange = function () {
+        console.log("PP " +this.status + " " + this.response + " " + ajax.readyState)
         if (ajax.readyState==4 && ajax.status==200) {
             modal.setContent('<h1>Privacy Policy</h1> '+ this.responseText)
         }
@@ -45,7 +47,6 @@ function showPP() {
     ajax.send();
     modal.open()
 }
-authorise()
 
 var modal = new tingle.modal({
     footer: false,
@@ -53,3 +54,5 @@ var modal = new tingle.modal({
     closeMethods: ['overlay', 'button', 'escape'],
     closeLabel: "Close",
 });
+
+authorise()
