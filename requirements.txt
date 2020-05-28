@@ -2,7 +2,6 @@ asgiref==3.2.7
 asyncio==3.4.3
 certifi==2020.4.5.1
 chardet==3.0.4
-ecrterm==0.31
 idna==2.9
 ioloop==0.1a0
 -e git+ssh://git@github.com/kaisims/ecrterm.git@preAuth#egg=ecrterm

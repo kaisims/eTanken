@@ -19,18 +19,6 @@ class TerminalController(ECR):
             connection = False
         return connection
 
-    async def main(self):
-        #TODO Check if Ladepunkt ist bereit
-        self.register()
-        receipt = self.preAuthorisation()
-        #TODO Sende Ladevorgang starten an Backend
-        #TODO Per Javascript? Display ändern
-        #TODO Warte auf Antwort
-        bon = self.teilstorno(receipt=receipt, amount=2500)
-        printer(bon)
-        #TODO Upload Bon
-        #TODO wieder auf Startseite
-
     def setupterminal(self):
         self.register(config_byte=ConfigByte.ALL, tlv={0x26: {0x0A: b'\x06\xD1'}})
         self.wait_for_status()
@@ -65,7 +53,7 @@ class TerminalController(ECR):
             return None
 
     def teilstorno(self, receipt=0, amount=10):
-        if self.preauthorisationreverse(receipt=receipt, amount_cent=amount):
+        if self.partialcancellation(receipt=receipt, amount_cent=amount):
             bon = self.last_printout()
             self.wait_for_status()
             self.show_text(
