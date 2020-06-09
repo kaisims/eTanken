@@ -64,6 +64,9 @@ class TerminalController(ECR):
                 lines=['Ein Fehler ist aufgetreten'], beeps=2)
             return False
 
+    def abort(self):
+        ECR.abort(self)
+
 
 def printer(lines_of_text):
     for line in lines_of_text:

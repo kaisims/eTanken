@@ -84,6 +84,15 @@ class AuthoriseHandler(RequestHandler):
             self.finish()
 
 
+class AbortHandler(RequestHandler):
+    def get(self):
+        tc.abort()
+        global preauth
+        preauth.threadexecutor.shutdown(wait=False)
+        preauth = None
+        self.redirect('/chooseChargePoint/', permanent=False)
+
+
 class ChargeHandler(RequestHandler):
     def get(self, receipt):
         self.render('charge.html', receipt=receipt)
@@ -118,6 +127,7 @@ def make_app():
         (r"/", StartHandler),
         (r"/chooseChargePoint/", ChargePointHandler),
         (r"/authorise/([^/]+)?", AuthoriseHandler),
+        (r"/abortAuth/", AbortHandler),
         (r"/charge/([^/]+)?", ChargeHandler),
         (r"/stopCharge/([^/]+)?", StopTransHandler),
         (r"/getAgb/", AgbHandler),
