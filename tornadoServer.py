@@ -71,6 +71,7 @@ class AuthoriseHandler(RequestHandler):
             receipt = preauth.thread.result()
             if receipt:
                 cc.startLoading(preauth.evseid)
+                data[receipt] = preauth.evseid
                 print("started Loading, sending Payed " + receipt)
                 self.set_status(200)
                 self.finish(str(receipt))
@@ -115,10 +116,12 @@ class StopTransHandler(RequestHandler):
         self.set_status(200)
         self.finish()
 
+    #DEBUG Function
     def get(self, receipt):
         bon = tc.teilstorno(receipt=receipt, amount=2000)
-        cc.stopLoading(data["transId"])
+        cc.stopLoading(cc.getTransactionId(data[receipt]))
         self.render('bon.html', bon=bon)
+        del data[receipt]
 
 
 def make_app():
