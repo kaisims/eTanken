@@ -28,7 +28,7 @@ class ChargeCloudController():
         r = requests.get(url=url, auth=("contract#" + self.user, self.__pswd))
         data = "contract#" + r.json()["data"]
         self.__auth = "Token " + str(b64encode(data.encode("utf-8")), "utf-8")
-        print(self.__auth)
+        #print(self.__auth)
 
     def getAGB(self):
         url = self.url + "rest:client/" + self.__application + "/getActiveAgb"
@@ -77,9 +77,9 @@ class ChargeCloudController():
                   "authenticatorId": self.__authenticatorid}
         headers = {'Authorization': self.__auth}
         r = requests.post(url=url, headers=headers, params=params, data=None)
-        print("Antwort: " + r.text)
+        #print("Antwort: " + r.text)
         ##debug
-        return self.getTransactionId(evseid)
+        #return self.getTransactionId(evseid)
 
     #########
     ##DEBUG##
@@ -89,7 +89,7 @@ class ChargeCloudController():
         params = {"transactionId": transactionId}
         headers = {'Authorization': self.__auth}
         r = requests.post(url=url, headers=headers, params=params, data=None)
-        print("Antwort: " + r.text)
+        #print("Antwort: " + r.text)
 
     def getTransactionId(self, evseid):
         url = self.url + "rest:contract/" + self.__application + "/getEmobilityTransactions"

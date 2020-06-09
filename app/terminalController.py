@@ -42,8 +42,7 @@ class TerminalController(ECR):
         receipt = self.preauthorisation(amount_cent=amount)
         if receipt:
             self.wait_for_status()
-            self.show_text(
-                lines=['Zahlung autorisiert!'], beeps=1)
+            #self.show_text(lines=['Zahlung autorisiert!'], beeps=1)
             return receipt
         else:
             self.wait_for_status()
