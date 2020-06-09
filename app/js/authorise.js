@@ -6,14 +6,18 @@ function loadUrl(location) {
 function authorise(){
     var ajax = new XMLHttpRequest();
     ajax.onreadystatechange = function () {
-        console.log(this.status + " " + this.response + " " + ajax.readyState)
-        if (ajax.readyState==4 && ajax.status==200) {
+        //console.log(this.status + " " + this.response + " " + ajax.readyState)
+        if (ajax.readyState===4 && ajax.status===200) {
             var link = "http://" + window.document.location.host + "/charge/" + this.responseText
-            console.log(link)
             loadUrl(link);
         }
-        if (ajax.readyState== 4 && ajax.status!=200){
-            location.reload()
+        else if (ajax.readyState=== 4 && ajax.status===204){
+            console.log("again")
+            sleep(1000).then(()=>authorise())
+        }
+        else if (ajax.readyState=== 4){
+            link = "http://" + window.document.location.host + "/chooseChargePoint/"
+            loadUrl(link);
         }
     }
     ajax.open("OPTIONS", "");
@@ -24,8 +28,8 @@ function showAgb(){
     modal.setContent("Wird geladen..")
     var ajax = new XMLHttpRequest();
     ajax.onreadystatechange = function () {
-        console.log("AGB " +this.status + " " + this.response + " " + ajax.readyState)
-        if (ajax.readyState==4 && ajax.status==200) {
+        //console.log("AGB " +this.status + " "  + ajax.readyState)
+        if (ajax.readyState===4 && ajax.status===200) {
             modal.setContent('<h1>Allgemeine Geschäftsbedingungen</h1> '+ this.responseText)
         }
     }
@@ -38,8 +42,8 @@ function showPP() {
     modal.setContent("Wird geladen..")
     var ajax = new XMLHttpRequest();
     ajax.onreadystatechange = function () {
-        console.log("PP " +this.status + " " + this.response + " " + ajax.readyState)
-        if (ajax.readyState==4 && ajax.status==200) {
+        //console.log("PP " +this.status + " " + ajax.readyState)
+        if (ajax.readyState===4 && ajax.status===200) {
             modal.setContent('<h1>Privacy Policy</h1> '+ this.responseText)
         }
     }
@@ -54,5 +58,9 @@ var modal = new tingle.modal({
     closeMethods: ['overlay', 'button', 'escape'],
     closeLabel: "Close",
 });
+
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 
 authorise()

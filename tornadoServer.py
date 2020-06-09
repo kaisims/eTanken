@@ -6,6 +6,7 @@ from abc import ABC
 import tornado.ioloop
 import tornado.web
 import tornado.template
+import concurrent.futures
 from tornado.web import RequestHandler
 
 import asyncio
@@ -13,6 +14,20 @@ from app.terminalController import *
 from app.chargeCloudController import *
 
 data = dict(paid=False)
+preauth = None
+
+
+class PreAuth:
+
+    def __init__(self):
+        self.evseid = None
+        self.thread = None
+        self.threadexecutor = None
+
+    def runPreAuth(self):
+        self.threadexecutor = concurrent.futures.ThreadPoolExecutor()
+        self.thread = self.threadexecutor.submit(tc.preAuthorisation)
+        return self.thread
 
 
 class StartHandler(RequestHandler):
@@ -31,42 +46,47 @@ class ChargePointHandler(RequestHandler):
         chargepoints = cc.getChargePoints()
         for chargepoint in chargepoints:
             chargepoint["url"] = "/authorise/" + chargepoint["id"]
-            print(chargepoint['url'])
+            #print(chargepoint['url'])
         self.render('chargepoints.html', chargepoints=chargepoints)
 
 
 class AuthoriseHandler(RequestHandler):
     def get(self, evseid):
         if tc.checkConnection():
-            if not data['paid']:
+            global preauth
+            if preauth is None:
                 self.render('authorisation.html', euro=12, url="/", evseid=evseid)
                 tc.setupterminal()
-                #receipt = 5
-                receipt = tc.preAuthorisation()
-                #TODO ASYNC
-                if receipt:
-                    data['receipt'] = receipt
-                    data['paid'] = True
-                else:
-                    data['paid'] = False
-                print("Authorisation was %s" % data['paid'])
+
+                preauth = PreAuth()
+                preauth.runPreAuth()
+                preauth.evseid = evseid
+                print("Authorisation was send to Terminal")
+
             else:
-                link = '/charge/' + str(data['receipt'])
-                self.redirect(url=link, permanent=False)
-                print("Redirected %s" % link)
-                cc.startLoading(evseid)
+                #link = '/charge/' + str(data['receipt'])
+                #self.redirect(url=link, permanent=False)
+                #print("Redirected %s" % link)
+                self.render('authorisation.html', euro=12, url="/", evseid=evseid)
         else:
-            self.write('Hmm kein Terminal zu finden')
+            self.send_error()
 
     def options(self, evseid):
-        if data['paid']:
-            print("send isPayed")
-            self.set_status(200)
-            self.write(str(data['receipt']))
-            self.finish()
+        global preauth
+        if preauth.thread.done():
+            receipt = preauth.thread.result()
+            if receipt:
+                cc.startLoading(preauth.evseid)
+                print("started Loading, sending Payed " + receipt)
+                self.set_status(200)
+                self.finish(str(receipt))
+            else:
+                self.send_error()
+            preauth.threadexecutor.shutdown(wait=False)
+            preauth = None
         else:
-            print("send isnotPayed")
-            self.set_status(102)
+            print("Terminal still busy")
+            self.set_status(204)
             self.finish()
 
 
@@ -77,7 +97,6 @@ class ChargeHandler(RequestHandler):
 
 class AgbHandler(RequestHandler):
     def get(self):
-        cc.getAGB()
         self.write(cc.getAGB())
 
 
