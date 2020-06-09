@@ -7,7 +7,7 @@ class TerminalController(ECR):
 
     def __init__(self, ip=None):
         try:
-            super().__init__(device='socket://'+ip, password='000000')
+            super().__init__(device='socket://'+ip+"?ssl=true", password='000000')
         except:
             self = None
 
@@ -38,8 +38,8 @@ class TerminalController(ECR):
                 # status == 0xDC for ReadCard (06 C0) -> Karte drin.
                 # 0x9c karte draussen.
 
-    def preAuthorisation(self, amount=5000):
-        receipt = self.preauthorisation(amount_cent=amount)
+    def preauthorisation(self, amount=5000, listener=None):
+        receipt = ECR.preauthorisation(self, amount_cent=amount)
         if receipt:
             self.wait_for_status()
             #self.show_text(lines=['Zahlung autorisiert!'], beeps=1)

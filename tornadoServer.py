@@ -18,7 +18,6 @@ preauth = None
 
 
 class PreAuth:
-
     def __init__(self):
         self.evseid = None
         self.thread = None
@@ -26,7 +25,7 @@ class PreAuth:
 
     def runPreAuth(self):
         self.threadexecutor = concurrent.futures.ThreadPoolExecutor()
-        self.thread = self.threadexecutor.submit(tc.preAuthorisation)
+        self.thread = self.threadexecutor.submit(tc.preauthorisation)
         return self.thread
 
 
@@ -52,26 +51,21 @@ class ChargePointHandler(RequestHandler):
 
 class AuthoriseHandler(RequestHandler):
     def get(self, evseid):
+        self.render('authorisation.html', euro=12, url="/abortAuth/", evseid=evseid)
+
         if tc.checkConnection():
             global preauth
             if preauth is None:
-                self.render('authorisation.html', euro=12, url="/", evseid=evseid)
                 tc.setupterminal()
-
                 preauth = PreAuth()
                 preauth.runPreAuth()
                 preauth.evseid = evseid
                 print("Authorisation was send to Terminal")
 
-            else:
-                #link = '/charge/' + str(data['receipt'])
-                #self.redirect(url=link, permanent=False)
-                #print("Redirected %s" % link)
-                self.render('authorisation.html', euro=12, url="/", evseid=evseid)
         else:
             self.send_error()
 
-    def options(self, evseid):
+    def options(self, __):
         global preauth
         if preauth.thread.done():
             receipt = preauth.thread.result()
