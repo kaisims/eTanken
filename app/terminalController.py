@@ -6,8 +6,9 @@ from ecrterm.packets.types import ConfigByte
 class TerminalController(ECR):
 
     def __init__(self, ip=None):
+        self.ip=ip
         try:
-            super().__init__(device='socket://'+ip+"?ssl=true", password='000000')
+            super().__init__(device='socket://'+ip+"?ssl=true", password='111111')
         except:
             self = None
 
@@ -20,6 +21,8 @@ class TerminalController(ECR):
         return connection
 
     def setupterminal(self):
+        if self.transmitter is None:
+            super().__init__(device='socket://'+self.ip+"?ssl=true", password='111111')
         self.register(config_byte=ConfigByte.ALL, tlv={0x26: {0x0A: b'\x06\xD1'}})
         self.wait_for_status()
         status = self.status()

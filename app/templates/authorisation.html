@@ -2,11 +2,8 @@
 {% block content %}
     <div><h1>Nice!</h1>
     <br>
-    <p>Die Ladung an dem Ladepunkt {{evseid}} wird {{euro}} Euro pro Minute kosten!</p>
-        Wenn Sie fortfahren, stimmen sie <button id="agb" onclick="showAgb()">den AGB</button> und <button id="pp" onclick="showPP()">Privatsphären</button> Bumms zu.
-        <p>Einfach Kreditkarte oder Handy ans Lesegerät halten, um Zahlung zu autorisieren.</p>
+        <p>Jetzt einfach Kreditkarte oder Handy ans Lesegerät halten, um eine Zahlung zu vorautorisieren.<br> Es wird ein Betrag auf ihrer Karte reserviert und der Rest wird nach der kompletten Ladung storniert. Wie bei Mietwagen oder Hotels.</p>
     </div>
-    <h2><a href="{{url}}">zurück</a></h2>
-    <script src='{{ static_url("js/tingle.min.js") }}'></script>
+    <h2><a href="{{url}}">ABBRECHEN</a></h2>
     <script src='{{ static_url("js/authorise.js") }}'></script>
 {% end %}

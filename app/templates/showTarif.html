@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+    <div><h1>Rechtsbumms</h1>
+    <br>
+        <p>Die Ladung an dem Ladepunkt {{evseid}} wird {{euro}} Euro pro Minute kosten!</p>
+        Wenn Sie fortfahren, stimmen sie <button id="agb" onclick="showAgb()">den AGB</button> und <button id="pp" onclick="showPP()">Privatsphären</button> Bumms zu.
+    </div>
+    <a href="{{ url }}">WEITER</a>
+    <script src='{{ static_url("js/tingle.min.js") }}'></script>
+    <script src='{{ static_url("js/showTarif.js") }}'></script>
+{% end %}

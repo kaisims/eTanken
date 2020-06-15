@@ -7,6 +7,8 @@ import tornado.ioloop
 import tornado.web
 import tornado.template
 import concurrent.futures
+
+from tornado.concurrent import run_on_executor
 from tornado.web import RequestHandler
 
 import asyncio
@@ -44,15 +46,20 @@ class ChargePointHandler(RequestHandler):
     def get(self):
         chargepoints = cc.getChargePoints()
         for chargepoint in chargepoints:
-            chargepoint["url"] = "/authorise/" + chargepoint["id"]
-            #print(chargepoint['url'])
+            chargepoint["url"] = "/showTarif/" + chargepoint["id"]
         self.render('chargepoints.html', chargepoints=chargepoints)
+
+
+class TarifHandler(RequestHandler):
+    def get(self, evseid):
+
+        url = "/authorise/" + evseid
+        self.render('showTarif.html', evseid=evseid, url=url, euro=12)
 
 
 class AuthoriseHandler(RequestHandler):
     def get(self, evseid):
-        self.render('authorisation.html', euro=12, url="/abortAuth/", evseid=evseid)
-
+        self.render('authorisation.html', url="/abortAuth/", evseid=evseid)
         if tc.checkConnection():
             global preauth
             if preauth is None:
@@ -61,13 +68,12 @@ class AuthoriseHandler(RequestHandler):
                 preauth.runPreAuth()
                 preauth.evseid = evseid
                 print("Authorisation was send to Terminal")
-
         else:
             self.send_error()
 
     def options(self, __):
         global preauth
-        if preauth.thread.done():
+        if preauth.thread is not None and preauth.thread.done():
             receipt = preauth.thread.result()
             if receipt:
                 cc.startLoading(preauth.evseid)
@@ -87,10 +93,11 @@ class AuthoriseHandler(RequestHandler):
 
 class AbortHandler(RequestHandler):
     def get(self):
-        tc.abort()
         global preauth
         preauth.threadexecutor.shutdown(wait=False)
         preauth = None
+        #Geht nicht
+        tc.abort()
         self.redirect('/chooseChargePoint/', permanent=False)
 
 
@@ -129,6 +136,7 @@ def make_app():
     return tornado.web.Application([
         (r"/", StartHandler),
         (r"/chooseChargePoint/", ChargePointHandler),
+        (r"/showTarif/([^/]+)?", TarifHandler),
         (r"/authorise/([^/]+)?", AuthoriseHandler),
         (r"/abortAuth/", AbortHandler),
         (r"/charge/([^/]+)?", ChargeHandler),
