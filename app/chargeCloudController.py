@@ -28,7 +28,6 @@ class ChargeCloudController():
         r = requests.get(url=url, auth=("contract#" + self.user, self.__pwd))
         data = "contract#" + r.json()["data"]
         self.__auth = "Token " + str(b64encode(data.encode("utf-8")), "utf-8")
-        #print(self.__auth)
 
     def getAGB(self):
         url = self.url + "rest:client/" + self.__application + "/getActiveAgb"
@@ -40,13 +39,19 @@ class ChargeCloudController():
         r = requests.get(url=url)
         return r.json()["data"]["text"]
 
-    def getTariff(self, tariffId):
-        if self.tariff is not None:
-            url = self.url + "emobility:ocpi/" + self.__application + "/ocpi/app/2.0/tarrifs/DE/POW/" + tariffId
+    def getTariff(self, tariffid):
+        if self.tariff is None:
+            url = self.url + "emobility:ocpi/" + self.__application + "/ocpi/app/2.0/tariffs/DE/POW/" + tariffid
             headers = {'Authorization': self.__auth}
-            r = requests.post(url=url, data=None, headers=headers)
+            r = requests.get(url=url, headers=headers)
             self.tariff = r.json()["data"]
         return self.tariff
+
+    def getTariffIdByEvseId(self, evseid):
+        for cp in self.getChargePoints():
+            if cp["id"] == evseid:
+                return cp["connectors"][0]["tariff_id"]
+        return None
 
     def getLocation(self):
 

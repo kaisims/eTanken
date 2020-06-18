@@ -54,9 +54,14 @@ class ChargePointHandler(RequestHandler):
 
 class TarifHandler(RequestHandler):
     def get(self, evseid):
-
-        url = "/authorise/" + evseid
-        self.render('showTarif.html', evseid=evseid, url=url, euro=12)
+        tariff_id = cc.getTariffIdByEvseId(evseid=evseid)
+        print(tariff_id)
+        if tariff_id is not None:
+            tarrif = cc.getTariff(tariffid=tariff_id)
+            print(tarrif)
+        url = "/chooseChargePoint/"
+        url2 = "/authorise/" + evseid
+        self.render('showTarif.html', evseid=evseid, url=url, url2=url2, euro=12)
 
 
 class AuthoriseHandler(RequestHandler):
@@ -161,6 +166,6 @@ if __name__ == "__main__":
     app.listen(config["port"])
     tc = TerminalController(**config["terminal"])
     cc = ChargeCloudController(**config["cc"])
-    tc.setupterminal()
+    #tc.setupterminal()
 
     tornado.ioloop.IOLoop.current().start()
