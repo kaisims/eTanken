@@ -1,0 +1,10 @@
+cc:
+  user: username
+  pwd: password
+  env: environment of cc
+  application: application key
+  authenticatorid: id of contract authenticator
+  locationid: locationid
+terminal:
+  ip: "ip:port"
+port: 8000

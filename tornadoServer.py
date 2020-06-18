@@ -7,6 +7,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.template
 import concurrent.futures
+import yaml
 
 from tornado.concurrent import run_on_executor
 from tornado.web import RequestHandler
@@ -33,11 +34,12 @@ class PreAuth:
 
 class StartHandler(RequestHandler):
     def get(self):
+        #TODO: check ob Controller von Ladepunkt online ist.
         if tc.checkConnection() and cc.checkConnection() == 200:
             self.render('start.html', url="/chooseChargePoint/")
             cc.authorize()
             print(tc.checkConnection())
-            cc.getLocation()
+
         else:
             self.write('Hmm kein Terminal zu finden')
 
@@ -83,7 +85,7 @@ class AuthoriseHandler(RequestHandler):
                 self.finish(str(receipt))
             else:
                 self.send_error()
-            preauth.threadexecutor.shutdown(wait=False)
+            #preauth.threadexecutor.shutdown(wait=False)
             preauth = None
         else:
             print("Terminal still busy")
@@ -154,6 +156,11 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     dirname = os.path.dirname(__file__)
     app = make_app()
-    app.listen(8000)
-    tc = TerminalController("192.168.178.89:22001")
+
+    config = yaml.safe_load(open("config.yml"))
+    app.listen(config["port"])
+    tc = TerminalController(**config["terminal"])
+    cc = ChargeCloudController(**config["cc"])
+    tc.setupterminal()
+
     tornado.ioloop.IOLoop.current().start()
