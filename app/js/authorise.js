@@ -24,13 +24,6 @@ function authorise(){
     ajax.send();
 }
 
-var modal = new tingle.modal({
-    footer: false,
-    stickyFooter: false,
-    closeMethods: ['overlay', 'button', 'escape'],
-    closeLabel: "Close",
-});
-
 const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
