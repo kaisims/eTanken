@@ -1,16 +1,7 @@
-asgiref==3.2.7
 asyncio==3.4.3
-certifi==2020.4.5.1
-chardet==3.0.4
-idna==2.9
-ioloop==0.1a0
--e git+ssh://git@github.com/kaisims/ecrterm.git@preAuth#egg=ecrterm
-pyserial==3.4
-pytlv==0.71
-pytz==2020.1
-requests==2.23.0
-six==1.14.0
-sqlparse==0.3.1
+requests==2.24.0
 tornado==6.0.4
-urllib3==1.25.9
 zulu==1.2.0
+-e git+ssh://git@github.com/kaisims/ecrterm.git@preAuth#egg=ecrterm
+PyYAML==5.3.1
+six==1.15.0
