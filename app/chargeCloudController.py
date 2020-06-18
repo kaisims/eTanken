@@ -7,10 +7,10 @@ import json
 
 class ChargeCloudController():
 
-    def __init__(self, env, user, pswd, application, authenticatorid, locationid=None):
+    def __init__(self, env, user, pwd, application, authenticatorid, locationid=None):
         self.env = env
         self.user = user
-        self.__pswd = pswd
+        self.__pwd = pwd
         self.__application = application
         self.__authenticatorid = authenticatorid
         self.url = "https://" + env + ".chargecloud.de/"
@@ -25,7 +25,7 @@ class ChargeCloudController():
 
     def authorize(self):
         url = self.url + "rest:contract/" + self.__application + "/getContractAuthorizationToken"
-        r = requests.get(url=url, auth=("contract#" + self.user, self.__pswd))
+        r = requests.get(url=url, auth=("contract#" + self.user, self.__pwd))
         data = "contract#" + r.json()["data"]
         self.__auth = "Token " + str(b64encode(data.encode("utf-8")), "utf-8")
         #print(self.__auth)
@@ -49,11 +49,13 @@ class ChargeCloudController():
         return self.tariff
 
     def getLocation(self):
-        if self.location is not None:
-            date = zulu.parse(self.location["timestamp"])
-            if zulu.now().subtract(date) < zulu.parse_delta("5m"):
-                print("returned chargepoints from cache")
-                return self.location
+
+        # if self.location is not None:
+        #     date = zulu.parse(self.location["timestamp"])
+        #     if zulu.now().subtract(date) < zulu.parse_delta("5m"):
+        #         print("returned chargepoints from cache")
+        #         return self.location
+
         url = self.url + "emobility:ocpi/" + self.__application + "/ocpi/app/2.0/locations/DE/POW/" + self.locationid
         headers = {'Authorization': self.__auth}
         r = requests.post(url=url, data=None, headers=headers)

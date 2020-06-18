@@ -6,7 +6,7 @@ from ecrterm.packets.types import ConfigByte
 class TerminalController(ECR):
 
     def __init__(self, ip=None):
-        self.ip=ip
+        self.ip = ip
         try:
             super().__init__(device='socket://'+ip+"?ssl=true", password='111111')
         except:
