@@ -30,7 +30,6 @@ class StartHandler(RequestHandler):
         #TODO: check ob Controller von Ladepunkt online ist.
         if tc.checkConnection() and cc.checkConnection() == 200:
             self.render('start.html', url="/chooseChargePoint/")
-            cc.authorize()
             print(tc.checkConnection())
 
         else:
@@ -39,10 +38,14 @@ class StartHandler(RequestHandler):
 
 class ChargePointHandler(RequestHandler):
     def get(self):
+        cc.authorize()
         chargepoints = cc.getChargePoints()
         for chargepoint in chargepoints:
             chargepoint["url"] = "/showTarif/" + chargepoint["id"]
-        self.render('chargepoints.html', chargepoints=chargepoints)
+        if cc.getControllerAvailability():
+            self.render('chargepoints.html', chargepoints=chargepoints)
+        else:
+            self.render('chargepoints.html', chargepoints=None)
 
 
 class TarifHandler(RequestHandler):
@@ -73,18 +76,19 @@ class AuthoriseHandler(RequestHandler):
 
     def options(self, __):
         global preauth
-        if preauth.thread is not None and preauth.thread.done():
-            receipt = preauth.thread.result()
-            if receipt:
-                cc.startLoading(preauth.evseid)
-                data[receipt] = preauth.evseid
-                print("started Loading, sending Payed " + receipt)
-                self.set_status(200)
-                self.finish(str(receipt))
-            else:
-                self.send_error()
-            #preauth.threadexecutor.shutdown(wait=False)
-            preauth = None
+        if preauth.thread is not None:
+            if preauth.thread.done():
+                receipt = preauth.thread.result()
+                if receipt:
+                    cc.startLoading(preauth.evseid)
+                    data[receipt] = preauth.evseid
+                    print("started Loading, sending Payed " + receipt)
+                    self.set_status(200)
+                    self.finish(str(receipt))
+                else:
+                    self.send_error()
+                #preauth.threadexecutor.shutdown(wait=False)
+                preauth = None
         else:
             print("Terminal still busy")
             self.set_status(204)
@@ -155,7 +159,10 @@ if __name__ == "__main__":
     dirname = os.path.dirname(__file__)
     app = make_app()
 
-    config = yaml.safe_load(open("config.yml"))
+    try:
+        config = yaml.safe_load(open("config.yml"))
+    except OSError:
+        raise Exception("No config file found")
     app.listen(config["port"])
     tc = TerminalController(**config["terminal"])
     cc = ChargeCloudController(**config["cc"])

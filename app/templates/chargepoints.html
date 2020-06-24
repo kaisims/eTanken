@@ -2,12 +2,16 @@
 {% block content %}
     <div><h1>Ladepunkt auswählen</h1>
     <br>
+        {% if chargepoints is not None %}
         {% for cp in chargepoints %}
         <div>
             <a {% if cp['status'] != 'AVAILABLE' %}class="disabled"{% end %} href="{{ cp['url'] }}" >
                 <b> Ladepunkt {{ cp['id'] }} ({{cp['status']}})</b>
             </a>
         </div>
+        {% end %}
+        {% else %}
+        <p> Kein Ladepunkt verfügbar. Eventuell ist der Controller offline.</p>
         {% end %}
         <button onClick="window.location.reload();">Neu Laden</button>
     </div>

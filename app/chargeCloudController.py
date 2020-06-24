@@ -78,6 +78,13 @@ class ChargeCloudController():
                 return True
         return False
 
+    def getControllerAvailability(self):
+        locations = self.getChargePoints()
+        for location in locations:
+            if location["status"] == "UNKNOWN":
+                return False
+        return True
+
     def startLoading(self, evseid):
         url = self.url + "rest:contract/" + self.__application + "/startEmobilityTransaction"
         params = {"chargePointEvse": evseid,
