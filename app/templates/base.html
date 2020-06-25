@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Start</title>
-    <link rel="stylesheet" href='{{ static_url("css/tingle.min.css") }}'>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href='{{ static_url("css/mui.min.css") }}' rel="stylesheet" type="text/css" />
+    <link href='{{ static_url("css/mui.min.css") }}' rel="stylesheet" type="text/css"/>
     <script src='{{ static_url("js/mui.min.js")}}'></script>
-    <style>
-        a.disabled {
-            pointer-events: none;
-            cursor: default;
-        }
-    </style>
+    <link href='{{ static_url("css/base.css") }}' rel="stylesheet" type="text/css"/>
+    {% block styles %}{% end %}
 </head>
 <body>
-{% block content %}{% end %}
-    <script src='{{ static_url("js/base.js")}}'></script>
+<div class="mui-container">
+    <div class="mui-panel panel">
+        {% block content %}{% end %}
+    </div>
+</div>
+<script src='{{ static_url("js/base.js")}}'></script>
 </body>
 </html>

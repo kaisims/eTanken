@@ -1,12 +1,38 @@
 {% extends "base.html" %}
+{% block styles %}
+<link href='{{ static_url("css/start.css") }}' rel="stylesheet" type="text/css"/>
+{% end %}
 {% block content %}
-<div class="mui-container">
-      <div class="mui-panel">
-        <div class="mui--text-display4">Guten Tag!</div>
-            <br>
-            <a href="{{url}}"><p></p>
-            </a>
-          <button class="mui-btn mui-btn--primary mui-btn--raised">Um einen Ladepunkt auszuwählen, bitte hier klicken.</button>
-      </div>
+<div class="mui--text-center">
+    <div class="mui--text-display2 title">Guten Tag!</div>
+    <a href="{{ url }}" class="mui-btn mui-btn--large mui-btn--primary mui-btn--raised">Jetzt starten!</a>
+</div>
+<div class="mui-container-fluid cardFooter">
+    <div class="mui-row">
+        <div class="mui-col-xs-2">
+            <object data="{{ static_url("svg/visa.svg") }}" type="image/svg+xml" width="60"
+                    height="30"></object>
+        </div>
+        <div class="mui-col-xs-2">
+            <object data="{{ static_url("svg/mastercard.svg") }}" type="image/svg+xml" width="60"
+                    height="30"></object>
+        </div>
+        <div class="mui-col-xs-2">
+            <object data="{{ static_url("svg/maestro.svg") }}" type="image/svg+xml" width="60"
+                    height="30"></object>
+        </div>
+        <div class="mui-col-xs-2">
+            <object data="{{ static_url("svg/amex.svg") }}" type="image/svg+xml" width="60"
+                    height="30"></object>
+        </div>
+        <div class="mui-col-xs-2">
+            <object data="{{ static_url("svg/google-pay.svg") }}" type="image/svg+xml" width="60"
+                    height="30"></object>
+        </div>
+        <div class="mui-col-xs-2">
+            <object data="{{ static_url("svg/apple-pay.svg") }}" type="image/svg+xml" width="60"
+                    height="30"></object>
+        </div>
+    </div>
 </div>
 {% end %}
