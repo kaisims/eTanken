@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block styles %}
+<link rel="stylesheet" href='{{ static_url("css/tingle.min.css") }}'>
+<link rel="stylesheet" href='{{ static_url("css/showTariff.css") }}'>
+{% end %}
+{% block content %}
+<div>
+    <div class="mui--text-display2 title">Rechtsgedöns</div>
+    <br>
+    <p>Die Ladung an dem Ladepunkt {{ evseid }} unterliegt folgender Preisstruktur:</p>
+    Startpreis: {{ tariff["flat"] }} €
+    <br>
+    Energiekosten: {{ tariff["energy"] }} €/Min
+    <br>
+    Standkosten: {{ tariff["time"]["always"]["price"] }}
+    <br> Montag: <br>
+    {% for day in tariff["time"]["monday"] %}
+    {% if day is not None %}
+        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Dienstag: <br>
+    {% for day in tariff["time"]["tuesday"] %}
+    {% if day is not None %}
+        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Mittwoch: <br>
+    {% for day in tariff["time"]["wednesday"] %}
+    {% if day is not None %}
+        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Donnerstag: <br>
+    {% for day in tariff["time"]["thursday"] %}
+    {% if day is not None %}
+        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Freitag: <br>
+    {% for day in tariff["time"]["friday"] %}
+    {% if day is not None %}
+        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Samstag: <br>
+    {% for day in tariff["time"]["saturday"] %}
+    {% if day is not None %}
+        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Sonntag: <br>
+    {% for day in tariff["time"]["sunday"] %}
+    {% if day is not None %}
+        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Feiertag: <br>
+    {% for day in tariff["time"]["holiday"] %}
+    {% if day is not None %}
+        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    Wenn Sie fortfahren, stimmen folgendes zu:
+    <div>
+        <button class="mui-btn mui-btn--danger" id="agb" onclick="showAgb()">AGB</button>
+        <button class="mui-btn mui-btn--danger" id="pp" onclick="showPP()">Privatsphären</button>
+    </div>
+</div>
+<a href="{{ url }}" class="mui-btn mui-btn--primary">Zurück</a>  <a href="{{ url2 }}" class="mui-btn mui-btn--primary">WEITER</a>
+<script src='{{ static_url("js/tingle.min.js") }}'></script>
+<script src='{{ static_url("js/showTarif.js") }}'></script>
+{% end %}

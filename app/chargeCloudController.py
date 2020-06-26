@@ -5,7 +5,7 @@ import zulu
 import json
 
 
-class ChargeCloudController():
+class ChargeCloudController:
 
     def __init__(self, env, user, pwd, application, authenticatorid, locationid=None):
         self.env = env
@@ -46,6 +46,43 @@ class ChargeCloudController():
             r = requests.get(url=url, headers=headers)
             self.tariff = r.json()["data"]
         return self.tariff
+
+    def parseTariff(self, tarifff):
+        if tarifff is not None:
+            tariff = tarifff[0]
+            parsed = dict()
+            parsed["id"] = tariff["id"]
+            parsed["currency"] = tariff["currency"]
+            parsed["time"] = dict()
+            el = [None] * (len(tariff["elements"]) - 2)
+            parsed["time"]["monday"] = el
+            parsed["time"]["tuesday"] = el
+            parsed["time"]["wednesday"] = el
+            parsed["time"]["thursday"] = el
+            parsed["time"]["friday"] = el
+            parsed["time"]["saturday"] = el
+            parsed["time"]["sunday"] = el
+            parsed["time"]["holiday"] = el
+            parsed["time"]["always"] = dict()
+            for index, element in enumerate(tariff["elements"]):
+                comp = element["price_components"][0]
+                if comp["type"] == "FLAT":
+                    parsed["flat"] = comp["price"]
+                elif comp["type"] == "ENERGY":
+                    parsed["energy"] = comp["price"]
+                elif comp["type"] == "TIME":
+                    if "restrictions" in element:
+                        res = element["restrictions"][0]
+                        for day in res["day_of_week"]:
+                            parsed["time"][day][index - 2] = dict()
+                            parsed["time"][day][index-2]["price"] = comp["price"]
+                            parsed["time"][day][index-2]["time"] = res["start_time"] + " - " + res["end_time"]
+                            parsed["time"][day][index-2]["step"] = comp["step_size"]
+                            parsed["time"][day][index-2]["min_duration"] = res["min_duration"]
+                    else:
+                        parsed["time"]["always"]["price"] = comp["price"]
+                        parsed["time"]["always"]["step"] = comp["step_size"]
+            return parsed
 
     def getTariffIdByEvseId(self, evseid):
         for cp in self.getChargePoints():
@@ -91,19 +128,19 @@ class ChargeCloudController():
                   "authenticatorId": self.__authenticatorid}
         headers = {'Authorization': self.__auth}
         r = requests.post(url=url, headers=headers, params=params, data=None)
-        #print("Antwort: " + r.text)
+        # print("Antwort: " + r.text)
         ##debug
-        #return self.getTransactionId(evseid)
+        # return self.getTransactionId(evseid)
 
     #########
     ##DEBUG##
     #########
-    def stopLoading(self, transactionId = None):
+    def stopLoading(self, transactionId=None):
         url = self.url + "rest:contract/" + self.__application + "/stopEmobilityTransaction"
         params = {"transactionId": transactionId}
         headers = {'Authorization': self.__auth}
         r = requests.post(url=url, headers=headers, params=params, data=None)
-        #print("Antwort: " + r.text)
+        # print("Antwort: " + r.text)
 
     def getTransactionId(self, evseid):
         url = self.url + "rest:contract/" + self.__application + "/getEmobilityTransactions"
@@ -118,9 +155,9 @@ class ChargeCloudController():
         return None
 
     def getInvoiceNumber(self):
-        #TODO Rechnungsnummer abholen
+        # TODO Rechnungsnummer abholen
         return True
 
     def getInvoicePDF(self):
-        #TODO Rechnung mit Rechnungsnummer runterladen, dann hochladen
+        # TODO Rechnung mit Rechnungsnummer runterladen, dann hochladen
         return True
