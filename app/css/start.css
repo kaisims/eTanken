@@ -3,9 +3,10 @@
     left: 0;
     position: absolute;
     margin: 15px;
+    width: 680px;
  }
 
 .title{
-    margin-top: 35px;
-    margin-bottom: 49px;
+    margin-top: 60px;
+    margin-bottom: 100px;
 }
