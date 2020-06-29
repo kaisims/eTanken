@@ -11,9 +11,11 @@
         {% if chargepoints is not None %}
         {% for cp in chargepoints %}
         <div class="mui-panel cp-panel">
-            <div class="mui--text-subhead" >{{ cp['id'] }}</div>
+            <div class="mui--text-subhead">{{ cp['id'] }}</div>
             <br>
-            <div><span class="dot {% if cp['status'] != 'AVAILABLE' %}red{% end %}"></span><div class="availability">{{ cp['status']}}</div></div>
+            <div><span class="dot {% if cp['status'] != 'AVAILABLE' %}red{% end %}"></span>
+                <div class="availability">{{ cp['status']}}</div>
+            </div>
             <br>
             <a href="{{ cp['url'] }}"
                class="mui-btn mui-btn--small mui-btn--primary ld-ext-right {% if cp['status'] != 'AVAILABLE' %}disabled{% else %} mui-btn--raised{% end %}"
@@ -26,9 +28,11 @@
         <p> Kein Ladepunkt verfügbar. Eventuell ist der Controller offline.</p>
         {% end %}
     </div>
-    <div class="mui-btn mui-btn--primary mui-btn--raised ld-ext-right"
-         onclick="this.classList.toggle('running');window.location.reload();">Neu Laden
-        <div class="ld ld-ring ld-spin"></div>
+    <div class="footer">
+        <div class="mui-btn mui-btn--primary mui-btn--raised ld-ext-right"
+             onclick="this.classList.toggle('running');window.location.reload();">Neu Laden
+            <div class="ld ld-ring ld-spin"></div>
+        </div>
     </div>
 </div>
 {% end %}

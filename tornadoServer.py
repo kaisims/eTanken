@@ -97,7 +97,8 @@ class AuthoriseHandler(RequestHandler):
 class AbortHandler(RequestHandler):
     def get(self):
         global preauth
-        preauth.threadexecutor.shutdown(wait=False)
+        if preauth is not None:
+            preauth.threadexecutor.shutdown(wait=False)
         preauth = None
         #Geht nicht
         tc.abort()

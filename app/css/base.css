@@ -25,3 +25,9 @@ a.disabled {
     pointer-events: none;
     cursor: default;
 }
+
+.footer{
+    position: absolute;
+    bottom: 10px;
+    width: 95%;
+}

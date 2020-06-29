@@ -5,69 +5,86 @@
 {% end %}
 {% block content %}
 <div>
-    <div class="mui--text-display2 title">Rechtsgedöns</div>
-    <br>
-    <p>Die Ladung an dem Ladepunkt {{ evseid }} unterliegt folgender Preisstruktur:</p>
+    <div class="mui--text-center">
+        <div class="mui--text-display2 title">Rechtsgedöns</div>
+    </div>
+    <p>Die Ladung an dem Ladepunkt <b>{{ evseid }}</b> unterliegt folgender Preisstruktur:</p>
     Startpreis: {{ tariff["flat"] }} €
     <br>
     Energiekosten: {{ tariff["energy"] }} €/Min
     <br>
-    Standkosten: {{ tariff["time"]["always"]["price"] }}
-    <br> Montag: <br>
-    {% for day in tariff["time"]["monday"] %}
-    {% if day is not None %}
-        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
-    {% end %}
-    {% end %}
-    <br> Dienstag: <br>
-    {% for day in tariff["time"]["tuesday"] %}
-    {% if day is not None %}
-        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
-    {% end %}
-    {% end %}
-    <br> Mittwoch: <br>
-    {% for day in tariff["time"]["wednesday"] %}
-    {% if day is not None %}
-        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
-    {% end %}
-    {% end %}
-    <br> Donnerstag: <br>
-    {% for day in tariff["time"]["thursday"] %}
-    {% if day is not None %}
-        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
-    {% end %}
-    {% end %}
-    <br> Freitag: <br>
-    {% for day in tariff["time"]["friday"] %}
-    {% if day is not None %}
-        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
-    {% end %}
-    {% end %}
-    <br> Samstag: <br>
-    {% for day in tariff["time"]["saturday"] %}
-    {% if day is not None %}
-        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
-    {% end %}
-    {% end %}
-    <br> Sonntag: <br>
-    {% for day in tariff["time"]["sunday"] %}
-    {% if day is not None %}
-        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
-    {% end %}
-    {% end %}
-    <br> Feiertag: <br>
-    {% for day in tariff["time"]["holiday"] %}
-    {% if day is not None %}
-        {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
-    {% end %}
-    {% end %}
+    Standkosten: {{ tariff["time"]["always"]["price"] }} €/Min
+    <button class="mui-btn mui-btn--primary mui-btn--small" id="st" onclick="showTariff('Hallo')">Extra Standkosten
+    </button>
+    <br>
     Wenn Sie fortfahren, stimmen folgendes zu:
     <div>
         <button class="mui-btn mui-btn--danger" id="agb" onclick="showAgb()">AGB</button>
         <button class="mui-btn mui-btn--danger" id="pp" onclick="showPP()">Privatsphären</button>
     </div>
 </div>
-<a href="{{ url }}" class="mui-btn mui-btn--primary">Zurück</a>  <a href="{{ url2 }}" class="mui-btn mui-btn--primary">WEITER</a>
+<div class="footer">
+    <a href="{{ url }}" class="mui-btn mui-btn--primary mui-btn--raised ld-ext-right"
+       onclick="this.classList.toggle('running')">Zurück
+        <div class="ld ld-ring ld-spin"></div>
+    </a>
+    <a href="{{ url2 }}" class="mui-btn mui-btn--primary mui-btn--raised mui--text-right ld-ext-right"
+       onclick="this.classList.toggle('running')">Weiter
+        <div class="ld ld-ring ld-spin"></div>
+    </a>
+</div>
 <script src='{{ static_url("js/tingle.min.js") }}'></script>
 <script src='{{ static_url("js/showTarif.js") }}'></script>
+
+<div class="mui--hide" id="extraTariff">
+    <h1>Weitere Standkosten:</h1>
+    <br> Montag: <br>
+    {% for day in tariff["time"]["monday"] %}
+    {% if day is not None %}
+    {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Dienstag: <br>
+    {% for day in tariff["time"]["tuesday"] %}
+    {% if day is not None %}
+    {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Mittwoch: <br>
+    {% for day in tariff["time"]["wednesday"] %}
+    {% if day is not None %}
+    {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Donnerstag: <br>
+    {% for day in tariff["time"]["thursday"] %}
+    {% if day is not None %}
+    {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Freitag: <br>
+    {% for day in tariff["time"]["friday"] %}
+    {% if day is not None %}
+    {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Samstag: <br>
+    {% for day in tariff["time"]["saturday"] %}
+    {% if day is not None %}
+    {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Sonntag: <br>
+    {% for day in tariff["time"]["sunday"] %}
+    {% if day is not None %}
+    {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+    <br> Feiertag: <br>
+    {% for day in tariff["time"]["holiday"] %}
+    {% if day is not None %}
+    {{ day["time"] }} Uhr {{ day["price"] }} €/Min <br>
+    {% end %}
+    {% end %}
+</div>
 {% end %}

@@ -26,6 +26,11 @@ function showPP() {
     modal.open()
 }
 
+function showTariff(){
+    modal.setContent(document.getElementById("extraTariff").innerHTML)
+    modal.open()
+}
+
 var modal = new tingle.modal({
     footer: false,
     stickyFooter: false,

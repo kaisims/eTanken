@@ -1,9 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-    <div><h1>Nice!</h1>
+<div>
+    <div class="mui--text-center">
+        <div class="mui--text-display2 title">Kreditkarte Autorisieren</div>
     <br>
-        <p>Jetzt einfach Kreditkarte oder Handy ans Lesegerät halten, um eine Zahlung zu vorautorisieren.<br> Es wird ein Betrag auf ihrer Karte reserviert und der Rest wird nach der kompletten Ladung storniert. Wie bei Mietwagen oder Hotels.</p>
-    </div>
-    <h2><a href="{{url}}">ABBRECHEN</a></h2>
-    <script src='{{ static_url("js/authorise.js") }}'></script>
+    <img src='{{ static_url("svg/download.png") }}' width="400"  />
+    <p>Jetzt einfach Kreditkarte oder Handy ans Lesegerät halten, um eine Zahlung zu vorautorisieren.<br> Es wird ein
+        Betrag auf ihrer Karte reserviert und der Rest wird nach der kompletten Ladung storniert. <br>Wie bei Mietwagen oder
+        Hotels.</p></div>
+</div>
+<div class="footer">
+    <a href="{{ url }}" class="mui-btn mui-btn--danger mui-btn--raised ld-ext-right"
+       onclick="this.classList.toggle('running')">Abbrechen
+        <div class="ld ld-ring ld-spin"></div>
+    </a>
+</div>
+<script src='{{ static_url("js/authorise.js") }}'></script>
 {% end %}

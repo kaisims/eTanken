@@ -67,20 +67,20 @@ class ChargeCloudController:
             for index, element in enumerate(tariff["elements"]):
                 comp = element["price_components"][0]
                 if comp["type"] == "FLAT":
-                    parsed["flat"] = comp["price"]
+                    parsed["flat"] = str(comp["price"]).ljust(4, "0").replace(".", ",")
                 elif comp["type"] == "ENERGY":
-                    parsed["energy"] = comp["price"]
+                    parsed["energy"] = str(comp["price"]).ljust(4, "0").replace(".", ",")
                 elif comp["type"] == "TIME":
                     if "restrictions" in element:
                         res = element["restrictions"][0]
                         for day in res["day_of_week"]:
                             parsed["time"][day][index - 2] = dict()
-                            parsed["time"][day][index-2]["price"] = comp["price"]
-                            parsed["time"][day][index-2]["time"] = res["start_time"] + " - " + res["end_time"]
-                            parsed["time"][day][index-2]["step"] = comp["step_size"]
-                            parsed["time"][day][index-2]["min_duration"] = res["min_duration"]
+                            parsed["time"][day][index - 2]["price"] = str(comp["price"]).ljust(4, "0").replace(".", ",")
+                            parsed["time"][day][index - 2]["time"] = res["start_time"] + " - " + res["end_time"]
+                            parsed["time"][day][index - 2]["step"] = comp["step_size"]
+                            parsed["time"][day][index - 2]["min_duration"] = res["min_duration"]
                     else:
-                        parsed["time"]["always"]["price"] = comp["price"]
+                        parsed["time"]["always"]["price"] = str(comp["price"]).ljust(4, "0").replace(".", ",")
                         parsed["time"]["always"]["step"] = comp["step_size"]
             return parsed
 
