@@ -1,18 +1,34 @@
 {% extends "base.html" %}
+{% block styles %}
+<link href='{{ static_url("css/chargepoints.css") }}' rel="stylesheet" type="text/css"/>
+{% end %}
 {% block content %}
-    <div><h1>Ladepunkt auswählen</h1>
-    <br>
+<div>
+    <div class="mui--text-center">
+        <div class="mui--text-display2 title">Ladepunkt auswählen!</div>
+    </div>
+    <div class="chargepoints">
         {% if chargepoints is not None %}
         {% for cp in chargepoints %}
-        <div>
-            <a {% if cp['status'] != 'AVAILABLE' %}class="disabled"{% end %} href="{{ cp['url'] }}" >
-                <b> Ladepunkt {{ cp['id'] }} ({{cp['status']}})</b>
+        <div class="mui-panel cp-panel">
+            <div class="mui--text-subhead" >{{ cp['id'] }}</div>
+            <br>
+            <div><span class="dot {% if cp['status'] != 'AVAILABLE' %}red{% end %}"></span><div class="availability">{{ cp['status']}}</div></div>
+            <br>
+            <a href="{{ cp['url'] }}"
+               class="mui-btn mui-btn--small mui-btn--primary ld-ext-right {% if cp['status'] != 'AVAILABLE' %}disabled{% else %} mui-btn--raised{% end %}"
+               onclick="this.classList.toggle('running')">Hier Laden!
+                <div class="ld ld-ring ld-spin"></div>
             </a>
         </div>
         {% end %}
         {% else %}
         <p> Kein Ladepunkt verfügbar. Eventuell ist der Controller offline.</p>
         {% end %}
-        <button onClick="window.location.reload();">Neu Laden</button>
     </div>
+    <div class="mui-btn mui-btn--primary mui-btn--raised ld-ext-right"
+         onclick="this.classList.toggle('running');window.location.reload();">Neu Laden
+        <div class="ld ld-ring ld-spin"></div>
+    </div>
+</div>
 {% end %}

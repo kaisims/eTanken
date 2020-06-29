@@ -1,10 +1,10 @@
 /* roboto-regular - latin */
 @font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Roboto'), local('Roboto-Regular'),
-       url('../css/roboto-v20-latin-regular.woff2') format('woff2') /* Chrome 26+, Opera 23+, Firefox 39+ */
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Roboto'), local('Roboto-Regular'),
+    url('../css/roboto-v20-latin-regular.woff2') format('woff2') /* Chrome 26+, Opera 23+, Firefox 39+ */
 }
 
 body {
