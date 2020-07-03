@@ -41,7 +41,7 @@ class TerminalController(ECR):
                 # status == 0xDC for ReadCard (06 C0) -> Karte drin.
                 # 0x9c karte draussen.
 
-    def preauthorisation(self, amount=5000, listener=None):
+    def preauthorisation(self, amount=1500, listener=None):
         receipt = ECR.preauthorisation(self, amount_cent=amount)
         if receipt:
             self.wait_for_status()

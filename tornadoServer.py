@@ -142,7 +142,7 @@ class StopTransHandler(RequestHandler):
         qr = pyqrcode.create(url)
         qr.svg('app/svg/receipt.svg', 5)
 
-        self.render('bon.html', bon=bon, url=url, amount=amount)
+        self.render('bon.html', bon=bon, url=url, amount=(1500 - int(amount)))
         del data[receipt]
 
     def options(self, __):
