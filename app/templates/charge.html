@@ -1,8 +1,14 @@
 {% extends "base.html" %}
+{% block styles %}
+<link href='{{ static_url("css/charge.css") }}' rel="stylesheet" type="text/css"/>
+{% end %}
 {% block content %}
-    <div><h1>Ladung kann beginnen</h1>
-    <br>
-    <p>Ladestation ist nun freigeschaltet! Einfach loslegen</p>
+<div class="mui--text-center">
+    <div class="mui--text-display2 title">Ladestation wurde freigeschaltet!</div>
+    <object data="{{ static_url("svg/plug.svg") }}" type="image/svg+xml"
+                    height="250"></object>
+
+    <p>Befolgen Sie nun den Anweisungen der Ladestation. Wenn Sie fertig Sind sehen Sie hier ihren Bon!</p>
         <h1>Transaktions ID: {{ receipt }}</h1>
     </div>
 {% end %}
