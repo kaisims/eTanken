@@ -1,5 +1,7 @@
 import os
 import platform
+
+import pyqrcode
 import tornado.ioloop
 import tornado.web
 import tornado.template
@@ -9,7 +11,7 @@ from tornado.web import RequestHandler
 from app.terminalController import *
 from app.chargeCloudController import *
 
-data = dict(paid=False)
+data = dict()
 preauth = None
 
 
@@ -27,7 +29,7 @@ class PreAuth:
 
 class StartHandler(RequestHandler):
     def get(self):
-        #TODO: check ob Controller von Ladepunkt online ist.
+        # TODO: check ob Controller von Ladepunkt online ist.
         if tc.checkConnection() and cc.checkConnection() == 200:
             self.render('start.html', url="/chooseChargePoint/")
             print(tc.checkConnection())
@@ -71,6 +73,7 @@ class AuthoriseHandler(RequestHandler):
                 preauth.evseid = evseid
                 print("Authorisation was send to Terminal")
         else:
+            print("Send Error")
             self.send_error()
 
     def options(self, __):
@@ -84,14 +87,15 @@ class AuthoriseHandler(RequestHandler):
                     print("started Loading, sending Payed " + receipt)
                     self.set_status(200)
                     self.finish(str(receipt))
+                    preauth = None
                 else:
+                    print("Send Error - no receipt")
                     self.send_error()
-                #preauth.threadexecutor.shutdown(wait=False)
-                preauth = None
-        else:
-            print("Terminal still busy")
-            self.set_status(204)
-            self.finish()
+                # preauth.threadexecutor.shutdown(wait=False)
+            else:
+                print("Terminal still busy")
+                self.set_status(204)
+                self.finish()
 
 
 class AbortHandler(RequestHandler):
@@ -100,7 +104,7 @@ class AbortHandler(RequestHandler):
         if preauth is not None:
             preauth.threadexecutor.shutdown(wait=False)
         preauth = None
-        #Geht nicht
+        # Geht nicht
         tc.abort()
         self.redirect('/chooseChargePoint/', permanent=False)
 
@@ -123,20 +127,37 @@ class PPHandler(RequestHandler):
 class StopTransHandler(RequestHandler):
     def post(self, receipt):
         amount = self.get_argument('amount')
-        tc.teilstorno(receipt=receipt, amount=amount)
+        data["trans"] = dict(amount=amount, receipt=receipt)
+        data["ready"] = True
+        print("Charge done for " + receipt + " and " + amount)
         self.set_status(200)
         self.finish()
 
-    #DEBUG Function
     def get(self, receipt):
-        bon = tc.teilstorno(receipt=receipt, amount=2000)
+        amount = self.get_argument('amount', "500")
+        bon = tc.teilstorno(receipt=receipt, amount=int(amount))
+
         cc.stopLoading(cc.getTransactionId(data[receipt]))
-        self.render('bon.html', bon=bon)
+        url = "http://localhost:8001/"
+        qr = pyqrcode.create(url)
+        qr.svg('app/svg/receipt.svg', 5)
+
+        self.render('bon.html', bon=bon, url=url, amount=amount)
         del data[receipt]
+
+    def options(self, __):
+        if data.get("ready") is not False:
+            self.set_status(200)
+            self.finish(data["trans"])
+            data["trans"] = None
+            data["ready"] = False
+        else:
+            print("Nix da")
+            self.set_status(204)
+            self.finish()
 
 
 def make_app():
-
     return tornado.web.Application([
         (r"/", StartHandler),
         (r"/chooseChargePoint/", ChargePointHandler),
@@ -147,7 +168,7 @@ def make_app():
         (r"/stopCharge/([^/]+)?", StopTransHandler),
         (r"/getAgb/", AgbHandler),
         (r"/getPP/", PPHandler)
-    ],  debug=True,
+    ], debug=True,
         template_path=os.path.join(dirname, 'app', 'templates'),
         static_path=os.path.join(dirname, 'app')
     )

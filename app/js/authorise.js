@@ -1,8 +1,3 @@
-function loadUrl(location) {
-    console.log(location);
-    window.location = location;
-}
-
 function authorise(){
     var ajax = new XMLHttpRequest();
     ajax.onreadystatechange = function () {
@@ -22,10 +17,6 @@ function authorise(){
     }
     ajax.open("OPTIONS", "");
     ajax.send();
-}
-
-const sleep = (milliseconds) => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
 authorise()
