@@ -1,6 +1,28 @@
 {% extends "base.html" %}
+{% block styles %}
+<link href='{{ static_url("css/bon.css") }}' rel="stylesheet" type="text/css"/>
+{% end %}
 {% block content %}
-    {% for bn in bon %}
+<div class="mui-row">
+    <div class="mui-col-xs-7">
+        <div class="mui--text-center">
+            <div class="mui--text-display1 title">Ladung ist beendet!</div>
+            <div>Die Ladung hat {{ amount }} Cent gekostet.</div>
+            <br/>
+        </div>
+        <div>Sie können sich die Rechnung online anschauen unter der URL: {{ url }}
+            <br/>Sie brauchen dafür die Beleg Nummer und die letzten 4 Stellen ihrer Kreditkarte
+        </div>
+        <div>Oder scannen Sie einfach diesen QR Code:</div>
+        <div class="mui--text-center">
+            <object data="{{ static_url("svg/receipt.svg") }}" type="image/svg+xml"></object>
+        </div>
+    </div>
+    <div class="mui-col-xs-5 bon">
+        {% for bn in bon %}
         {{ bn }}
-    {% end %}
+        {% end %}
+    </div>
+</div>
+
 {% end %}

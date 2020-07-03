@@ -5,3 +5,4 @@ zulu==1.2.0
 -e git+ssh://git@github.com/kaisims/ecrterm.git@preAuth#egg=ecrterm
 PyYAML==5.3.1
 six==1.15.0
+PyQRCode==1.2.1

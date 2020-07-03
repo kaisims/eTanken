@@ -1,0 +1,13 @@
+.bon{
+    overflow-y: scroll;
+    height: 430px;
+    white-space: pre;
+    font-family: monospace;
+    font-size: 10px;
+    line-height: 7px;
+}
+
+.title{
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
