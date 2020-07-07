@@ -137,7 +137,7 @@ class StopTransHandler(RequestHandler):
         amount = self.get_argument('amount', "500")
         bon = tc.teilstorno(receipt=receipt, amount=int(amount))
 
-        cc.stopLoading(cc.getTransactionId(data[receipt]))
+        print(cc.stopLoading(cc.getTransactionId(data[receipt])))
         url = "http://localhost:8001/"
         qr = pyqrcode.create(url)
         qr.svg('app/svg/receipt.svg', 5)
@@ -146,13 +146,15 @@ class StopTransHandler(RequestHandler):
         del data[receipt]
 
     def options(self, __):
-        if data.get("ready") is not False:
+        x = data.get("ready")
+        if not (x is None or x is False):
+            print("Send Payment Done Details")
             self.set_status(200)
             self.finish(data["trans"])
             data["trans"] = None
             data["ready"] = False
         else:
-            print("Nix da")
+            print("Send No Payment Details")
             self.set_status(204)
             self.finish()
 

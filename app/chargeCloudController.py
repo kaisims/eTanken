@@ -140,7 +140,7 @@ class ChargeCloudController:
         params = {"transactionId": transactionId}
         headers = {'Authorization': self.__auth}
         r = requests.post(url=url, headers=headers, params=params, data=None)
-        # print("Antwort: " + r.text)
+        return r.text
 
     def getTransactionId(self, evseid):
         url = self.url + "rest:contract/" + self.__application + "/getEmobilityTransactions"
