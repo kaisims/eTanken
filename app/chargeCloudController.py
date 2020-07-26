@@ -103,10 +103,10 @@ class ChargeCloudController:
         r = requests.post(url=url, data=None, headers=headers)
         self.location = r.json()
         print("returned chargepoints")
-        return self.location
+        return self.location["data"][0]
 
     def getChargePoints(self):
-        return self.getLocation()["data"][0]["evses"]
+        return self.getLocation()["evses"]
 
     def getChargePointsAvailability(self):
         locations = self.getChargePoints()

@@ -45,13 +45,9 @@ class TerminalController(ECR):
         receipt = ECR.preauthorisation(self, amount_cent=amount)
         if receipt:
             self.wait_for_status()
-            #self.show_text(lines=['Zahlung autorisiert!'], beeps=1)
             return receipt
         else:
             self.wait_for_status()
-            self.show_text(
-                lines=['Ein Fehler ist aufgetreten'],
-                beeps=2)
             return None
 
     def teilstorno(self, receipt=0, amount=10):
@@ -66,9 +62,6 @@ class TerminalController(ECR):
             self.show_text(
                 lines=['Ein Fehler ist aufgetreten'], beeps=2)
             return False
-
-    def abort(self):
-        ECR.abort(self)
 
 
 def printer(lines_of_text):

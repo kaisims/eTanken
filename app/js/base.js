@@ -13,4 +13,4 @@ const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
-setTimeout('Redirect()', 30000);
+setTimeout('Redirect()', 60000);

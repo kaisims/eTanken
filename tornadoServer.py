@@ -29,13 +29,13 @@ class PreAuth:
 
 class StartHandler(RequestHandler):
     def get(self):
-        # TODO: check ob Controller von Ladepunkt online ist.
+
         if tc.checkConnection() and cc.checkConnection() == 200:
             self.render('start.html', url="/chooseChargePoint/")
             print(tc.checkConnection())
 
         else:
-            self.write('Hmm kein Terminal zu finden')
+            self.write('Keine Verbindung zur Chargecloud oder des Terminals möglich')
 
 
 class ChargePointHandler(RequestHandler):
@@ -89,24 +89,14 @@ class AuthoriseHandler(RequestHandler):
                     self.finish(str(receipt))
                     preauth = None
                 else:
+                    preauth.threadexecutor.shutdown(wait=False)
+                    preauth = None
                     print("Send Error - no receipt")
                     self.send_error()
-                # preauth.threadexecutor.shutdown(wait=False)
             else:
                 print("Terminal still busy")
                 self.set_status(204)
                 self.finish()
-
-
-class AbortHandler(RequestHandler):
-    def get(self):
-        global preauth
-        if preauth is not None:
-            preauth.threadexecutor.shutdown(wait=False)
-        preauth = None
-        # Geht nicht
-        tc.abort()
-        self.redirect('/chooseChargePoint/', permanent=False)
 
 
 class ChargeHandler(RequestHandler):
@@ -165,7 +155,6 @@ def make_app():
         (r"/chooseChargePoint/", ChargePointHandler),
         (r"/showTarif/([^/]+)?", TarifHandler),
         (r"/authorise/([^/]+)?", AuthoriseHandler),
-        (r"/abortAuth/", AbortHandler),
         (r"/charge/([^/]+)?", ChargeHandler),
         (r"/stopCharge/([^/]+)?", StopTransHandler),
         (r"/getAgb/", AgbHandler),
