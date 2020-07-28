@@ -1,8 +1,7 @@
 from base64 import b64encode
-
+from requests.exceptions import ConnectionError
 import requests
-import zulu
-import json
+
 
 
 class ChargeCloudController:
@@ -20,8 +19,12 @@ class ChargeCloudController:
         self.tariff = None
 
     def checkConnection(self):
-        r = requests.get(url=self.url)
-        return r.status_code
+        try:
+            r = requests.get(url=self.url)
+            status = r.status_code
+        except ConnectionError:
+            status = 500
+        return status
 
     def authorize(self):
         url = self.url + "rest:contract/" + self.__application + "/getContractAuthorizationToken"
