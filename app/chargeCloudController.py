@@ -3,7 +3,6 @@ from requests.exceptions import ConnectionError
 import requests
 
 
-
 class ChargeCloudController:
 
     def __init__(self, env, user, pwd, application, authenticatorid, locationid=None):
@@ -31,6 +30,7 @@ class ChargeCloudController:
         r = requests.get(url=url, auth=("contract#" + self.user, self.__pwd))
         data = "contract#" + r.json()["data"]
         self.__auth = "Token " + str(b64encode(data.encode("utf-8")), "utf-8")
+        return self.__auth
 
     def getAGB(self):
         url = self.url + "rest:client/" + self.__application + "/getActiveAgb"
@@ -131,13 +131,8 @@ class ChargeCloudController:
                   "authenticatorId": self.__authenticatorid}
         headers = {'Authorization': self.__auth}
         r = requests.post(url=url, headers=headers, params=params, data=None)
-        # print("Antwort: " + r.text)
-        ##debug
-        # return self.getTransactionId(evseid)
+        return r.text
 
-    #########
-    ##DEBUG##
-    #########
     def stopLoading(self, transactionId=None):
         url = self.url + "rest:contract/" + self.__application + "/stopEmobilityTransaction"
         params = {"transactionId": transactionId}
@@ -156,11 +151,3 @@ class ChargeCloudController:
             if record["data"]["evseId"] == evseid:
                 return record["id"]
         return None
-
-    def getInvoiceNumber(self):
-        # TODO Rechnungsnummer abholen
-        return True
-
-    def getInvoicePDF(self):
-        # TODO Rechnung mit Rechnungsnummer runterladen, dann hochladen
-        return True

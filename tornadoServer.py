@@ -78,7 +78,7 @@ class AuthoriseHandler(RequestHandler):
 
     def options(self, __):
         global preauth
-        if preauth.thread is not None:
+        if isinstance(preauth, PreAuth) and preauth.thread is not None:
             if preauth.thread.done():
                 receipt = preauth.thread.result()
                 if receipt:

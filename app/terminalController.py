@@ -24,22 +24,6 @@ class TerminalController(ECR):
         if self.transmitter is None:
             super().__init__(device='socket://'+self.ip+"?ssl=true", password='111111')
         self.register(config_byte=ConfigByte.ALL, tlv={0x26: {0x0A: b'\x06\xD1'}})
-        self.wait_for_status()
-        status = self.status()
-        if status:
-            print('Status code of PT is %s' % status)
-            # laut doku sollte 0x9c bedeuten, ein tagesabschluss erfolgt
-            # bis jetzt unklar ob er es von selbst ausführt.
-
-            if status == 0x9c:
-                print('End Of Day')
-                self.end_of_day()
-                # last_printout() would work too:
-                printer(self.daylog)
-            else:
-                print('Unknown Status Code: %s' % status)
-                # status == 0xDC for ReadCard (06 C0) -> Karte drin.
-                # 0x9c karte draussen.
 
     def preauthorisation(self, amount=1500, listener=None):
         receipt = ECR.preauthorisation(self, amount_cent=amount)
